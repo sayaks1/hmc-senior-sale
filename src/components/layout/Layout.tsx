@@ -18,7 +18,6 @@ export default function Layout({ children }: LayoutProps) {
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (event, session) => {
         setUser(session?.user || null)
-        // Remove the redirect logic from here since we're handling it in handleSignOut
       }
     )
 
@@ -38,11 +37,8 @@ export default function Layout({ children }: LayoutProps) {
     try {
       await supabase.auth.signOut()
       setUser(null)
-      // Redirect to home page instead of login
-      const baseUrl = process.env.NODE_ENV === 'production' 
-        ? 'https://hmc-senior-sale-jytiirw1h-saya-kim-suzukis-projects.vercel.app'
-        : window.location.origin
-      window.location.href = baseUrl
+      // Force a full page reload to clear all state
+      window.location.href = '/'
     } catch (error) {
       console.error('Error signing out:', error)
     }
