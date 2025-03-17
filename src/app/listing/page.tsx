@@ -41,33 +41,33 @@ export default function ListingDetail() {
       setCurrentUser(user)
     }
     
+    const fetchListing = async () => {
+      const { data, error } = await supabase
+        .from('listings')
+        .select(`
+          *,
+          users(id, full_name, email),
+          categories(name),
+          images(id, url)
+        `)
+        .eq('id', id)
+        .single()
+      
+      if (error) {
+        console.error('Error fetching listing:', error)
+        setLoading(false)
+        return
+      }
+      
+      setListing(data)
+      setLoading(false)
+    }
+    
     getUser()
     if (id) {
       fetchListing()
     }
   }, [id, router])
-
-  async function fetchListing() {
-    const { data, error } = await supabase
-      .from('listings')
-      .select(`
-        *,
-        users(id, full_name, email),
-        categories(name),
-        images(id, url)
-      `)
-      .eq('id', id)
-      .single()
-    
-    if (error) {
-      console.error('Error fetching listing:', error)
-      setLoading(false)
-      return
-    }
-    
-    setListing(data)
-    setLoading(false)
-  }
 
   const handleContact = () => {
     if (listing && listing.users && listing.users.email) {
