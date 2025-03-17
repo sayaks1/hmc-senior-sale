@@ -18,6 +18,16 @@ export default function Layout({ children }: LayoutProps) {
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (event, session) => {
         setUser(session?.user || null)
+        // Only handle sign out if it wasn't triggered by our button
+        if (event === 'SIGNED_OUT') {
+          const baseUrl = process.env.NODE_ENV === 'production' 
+            ? 'https://hmc-senior-sale-jytiirw1h-saya-kim-suzukis-projects.vercel.app'
+            : window.location.origin
+          // Only redirect if we're not already on the login page
+          if (!window.location.pathname.includes('/login')) {
+            window.location.href = `${baseUrl}/login`
+          }
+        }
       }
     )
 
@@ -35,11 +45,15 @@ export default function Layout({ children }: LayoutProps) {
 
   const handleSignOut = async () => {
     try {
+      // First sign out from Supabase
       await supabase.auth.signOut()
       // Clear user state
       setUser(null)
-      // Use window.location for a full page reload to /login
-      window.location.href = '/login'
+      // Force redirect to login page with full URL to prevent incorrect redirects
+      const baseUrl = process.env.NODE_ENV === 'production' 
+        ? 'https://hmc-senior-sale-jytiirw1h-saya-kim-suzukis-projects.vercel.app'
+        : window.location.origin
+      window.location.href = `${baseUrl}/login`
     } catch (error) {
       console.error('Error signing out:', error)
     }
