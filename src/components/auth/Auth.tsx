@@ -1,10 +1,12 @@
+'use client'
+
 import { useState } from 'react'
-import { supabase } from '../lib/supabaseClient'
+import { supabase } from '../../lib/supabaseClient'
 
 export default function Auth() {
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState<boolean>(false)
 
-  const handleLogin = async () => {
+  const handleLogin = async (): Promise<void> => {
     try {
       setLoading(true)
       const { error } = await supabase.auth.signInWithOAuth({
@@ -18,7 +20,7 @@ export default function Auth() {
         },
       })
       if (error) throw error
-    } catch (error) {
+    } catch (error: any) {
       alert(error.error_description || error.message)
     } finally {
       setLoading(false)
@@ -37,4 +39,4 @@ export default function Auth() {
       </button>
     </div>
   )
-} 
+}

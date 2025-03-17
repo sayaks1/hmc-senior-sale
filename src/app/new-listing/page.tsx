@@ -1,21 +1,25 @@
+'use client'
+
 import { useState, useEffect } from 'react'
-import { supabase } from '../../lib/supabaseClient'
-import { useRouter } from 'next/router'
-import Layout from '../components/Layout'
+import { supabase } from '@/lib/supabaseClient'
+import { useRouter } from 'next/navigation'
+import Layout from '@/components/layout/Layout'
+import { User } from '@supabase/supabase-js'
+import { Category } from '@/types/listings'
 
 export default function NewListing() {
-  const [title, setTitle] = useState('')
-  const [description, setDescription] = useState('')
-  const [price, setPrice] = useState('')
-  const [categoryId, setCategoryId] = useState('')
-  const [images, setImages] = useState([])
-  const [categories, setCategories] = useState([])
-  const [loading, setLoading] = useState(false)
-  const [user, setUser] = useState(null)
+  const [title, setTitle] = useState<string>('')
+  const [description, setDescription] = useState<string>('')
+  const [price, setPrice] = useState<string>('')
+  const [categoryId, setCategoryId] = useState<string>('')
+  const [images, setImages] = useState<File[]>([])
+  const [categories, setCategories] = useState<Category[]>([])
+  const [loading, setLoading] = useState<boolean>(false)
+  const [user, setUser] = useState<User | null>(null)
   const router = useRouter()
 
   useEffect(() => {
-    const getUser = async () => {
+    const getUser = async (): Promise<void> => {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) {
         router.push('/')
@@ -24,7 +28,7 @@ export default function NewListing() {
       }
     }
     
-    const fetchCategories = async () => {
+    const fetchCategories = async (): Promise<void> => {
       const { data, error } = await supabase
         .from('categories')
         .select('*')
@@ -38,7 +42,7 @@ export default function NewListing() {
     fetchCategories()
   }, [router])
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault()
     
     if (!title || !description || !price || !categoryId) {
@@ -58,7 +62,7 @@ export default function NewListing() {
             description,
             price: parseFloat(price),
             category_id: categoryId,
-            user_id: user.id,
+            user_id: user!.id,
             status: 'available'
           }
         ])
@@ -71,7 +75,7 @@ export default function NewListing() {
         for (const image of images) {
           const fileExt = image.name.split('.').pop()
           const fileName = `${Math.random()}.${fileExt}`
-          const filePath = `${user.id}/${listing[0].id}/${fileName}`
+          const filePath = `${user!.id}/${listing![0].id}/${fileName}`
           
           // Upload to storage
           const { error: uploadError } = await supabase.storage
@@ -90,7 +94,7 @@ export default function NewListing() {
             .from('images')
             .insert([
               {
-                listing_id: listing[0].id,
+                listing_id: listing![0].id,
                 url: publicURL.publicUrl
               }
             ])
@@ -100,7 +104,7 @@ export default function NewListing() {
       }
       
       router.push('/my-listings')
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error creating listing:', error)
       alert('Error creating listing. Please try again.')
     } finally {
@@ -108,9 +112,11 @@ export default function NewListing() {
     }
   }
 
-  const handleImageChange = (e) => {
-    const files = Array.from(e.target.files)
-    setImages(files)
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
+    if (e.target.files) {
+      const files = Array.from(e.target.files)
+      setImages(files)
+    }
   }
 
   return (

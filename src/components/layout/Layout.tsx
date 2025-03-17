@@ -1,10 +1,17 @@
-import { useState, useEffect } from 'react'
-import { supabase } from '../lib/supabaseClient'
-import Link from 'next/link'
-import { useRouter } from 'next/router'
+'use client'
 
-export default function Layout({ children }) {
-  const [user, setUser] = useState(null)
+import { useState, useEffect } from 'react'
+import { supabase } from '../../lib/supabaseClient'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { User } from '@supabase/supabase-js'
+
+interface LayoutProps {
+  children: React.ReactNode
+}
+
+export default function Layout({ children }: LayoutProps) {
+  const [user, setUser] = useState<User | null>(null)
   const router = useRouter()
 
   useEffect(() => {
@@ -17,7 +24,7 @@ export default function Layout({ children }) {
       }
     )
 
-    const getUser = async () => {
+    const getUser = async (): Promise<void> => {
       const { data: { user } } = await supabase.auth.getUser()
       setUser(user)
     }
@@ -29,7 +36,7 @@ export default function Layout({ children }) {
     }
   }, [router])
 
-  const handleSignOut = async () => {
+  const handleSignOut = async (): Promise<void> => {
     await supabase.auth.signOut()
   }
 
@@ -37,20 +44,20 @@ export default function Layout({ children }) {
     <div className="layout">
       <header>
         <nav>
-          <Link href="/marketplace">
-            <a className="logo">Student Marketplace</a>
+          <Link href="/marketplace" className="logo">
+            Student Marketplace
           </Link>
           
           {user && (
             <div className="nav-links">
               <Link href="/marketplace">
-                <a>Browse</a>
+                Browse
               </Link>
               <Link href="/new-listing">
-                <a>Sell Item</a>
+                Sell Item
               </Link>
               <Link href="/my-listings">
-                <a>My Listings</a>
+                My Listings
               </Link>
               <button onClick={handleSignOut}>Sign Out</button>
             </div>

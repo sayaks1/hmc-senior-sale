@@ -1,17 +1,21 @@
+'use client'
+
 import { useState, useEffect } from 'react'
-import { supabase } from '../lib/supabaseClient'
-import Layout from '../components/Layout'
+import { supabase } from '@/lib/supabaseClient'
+import Layout from '@/components/layout/Layout'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
+import { User } from '@supabase/supabase-js'
+import { Listing } from '@/types/listings'
 
 export default function MyListings() {
-  const [listings, setListings] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [user, setUser] = useState(null)
+  const [listings, setListings] = useState<Listing[]>([])
+  const [loading, setLoading] = useState<boolean>(true)
+  const [user, setUser] = useState<User | null>(null)
   const router = useRouter()
 
   useEffect(() => {
-    const getUser = async () => {
+    const getUser = async (): Promise<void> => {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) {
         router.push('/')
@@ -24,7 +28,7 @@ export default function MyListings() {
     getUser()
   }, [router])
 
-  async function fetchListings(userId) {
+  async function fetchListings(userId: string): Promise<void> {
     const { data, error } = await supabase
       .from('listings')
       .select(`
@@ -41,7 +45,7 @@ export default function MyListings() {
     setLoading(false)
   }
 
-  async function updateListingStatus(id, status) {
+  async function updateListingStatus(id: string, status: 'available' | 'pending' | 'sold'): Promise<void> {
     const { error } = await supabase
       .from('listings')
       .update({ status })
@@ -52,11 +56,11 @@ export default function MyListings() {
       alert('Error updating listing status')
     } else {
       // Refresh listings
-      fetchListings(user.id)
+      if (user) fetchListings(user.id)
     }
   }
 
-  async function deleteListing(id) {
+  async function deleteListing(id: string): Promise<void> {
     if (window.confirm('Are you sure you want to delete this listing?')) {
       const { error } = await supabase
         .from('listings')
@@ -68,7 +72,7 @@ export default function MyListings() {
         alert('Error deleting listing')
       } else {
         // Refresh listings
-        fetchListings(user.id)
+        if (user) fetchListings(user.id)
       }
     }
   }
@@ -79,7 +83,7 @@ export default function MyListings() {
         <h1>My Listings</h1>
         
         <Link href="/new-listing">
-          <a className="create-button">Create New Listing</a>
+          <div className="create-button">Create New Listing</div>
         </Link>
         
         {loading ? (
@@ -115,11 +119,14 @@ export default function MyListings() {
                         </td>
                         <td>{listing.title}</td>
                         <td>${listing.price}</td>
-                        <td>{listing.categories.name}</td>
+                        <td>{listing.categories?.name}</td>
                         <td>
                           <select
                             value={listing.status}
-                            onChange={(e) => updateListingStatus(listing.id, e.target.value)}
+                            onChange={(e) => updateListingStatus(
+                              listing.id, 
+                              e.target.value as 'available' | 'pending' | 'sold'
+                            )}
                           >
                             <option value="available">Available</option>
                             <option value="pending">Pending</option>
@@ -129,10 +136,10 @@ export default function MyListings() {
                         <td>
                           <div className="action-buttons">
                             <Link href={`/listing/${listing.id}`}>
-                              <a className="view-button">View</a>
+                              <div className="view-button">View</div>
                             </Link>
                             <Link href={`/edit-listing/${listing.id}`}>
-                              <a className="edit-button">Edit</a>
+                              <div className="edit-button">Edit</div>
                             </Link>
                             <button
                               onClick={() => deleteListing(listing.id)}

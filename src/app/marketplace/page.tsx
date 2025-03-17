@@ -1,21 +1,24 @@
+'use client'
+
 import { useState, useEffect } from 'react'
-import { supabase } from '../lib/supabaseClient'
-import Layout from '../components/Layout'
+import { supabase } from '@/lib/supabaseClient'
+import Layout from '@/components/layout/Layout'
 import Link from 'next/link'
+import { Listing, Category } from '@/types/listings'
 
 export default function Marketplace() {
-  const [listings, setListings] = useState([])
-  const [categories, setCategories] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [searchTerm, setSearchTerm] = useState('')
-  const [selectedCategory, setSelectedCategory] = useState('')
+  const [listings, setListings] = useState<Listing[]>([])
+  const [categories, setCategories] = useState<Category[]>([])
+  const [loading, setLoading] = useState<boolean>(true)
+  const [searchTerm, setSearchTerm] = useState<string>('')
+  const [selectedCategory, setSelectedCategory] = useState<string>('')
 
   useEffect(() => {
     fetchCategories()
     fetchListings()
   }, [])
 
-  async function fetchCategories() {
+  async function fetchCategories(): Promise<void> {
     const { data, error } = await supabase
       .from('categories')
       .select('*')
@@ -25,7 +28,7 @@ export default function Marketplace() {
     else setCategories(data || [])
   }
 
-  async function fetchListings() {
+  async function fetchListings(): Promise<void> {
     let query = supabase
       .from('listings')
       .select(`
@@ -90,7 +93,7 @@ export default function Marketplace() {
             {filteredListings.length > 0 ? (
               filteredListings.map((listing) => (
                 <Link href={`/listing/${listing.id}`} key={listing.id}>
-                  <a className="listing-card">
+                  <div className="listing-card">
                     {listing.images && listing.images[0] && (
                       <img 
                         src={listing.images[0].url} 
@@ -99,11 +102,11 @@ export default function Marketplace() {
                     )}
                     <h3>{listing.title}</h3>
                     <p className="price">${listing.price}</p>
-                    <p className="category">{listing.categories.name}</p>
+                    <p className="category">{listing.categories?.name}</p>
                     <p className="seller">
-                      Seller: {listing.users.full_name}
+                      Seller: {listing.users?.full_name}
                     </p>
-                  </a>
+                  </div>
                 </Link>
               ))
             ) : (
