@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { supabase } from '../../lib/supabaseClient'
+import { supabase } from '@/lib/supabaseClient'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { User } from '@supabase/supabase-js'
@@ -12,21 +12,21 @@ interface LayoutProps {
 
 export default function Layout({ children }: LayoutProps) {
   const [user, setUser] = useState<User | null>(null)
+  const [loading, setLoading] = useState(true)
   const router = useRouter()
 
   useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (event, session) => {
         setUser(session?.user || null)
-        if (event === 'SIGNED_OUT') {
-          router.push('/')
-        }
+        setLoading(false)
       }
     )
 
-    const getUser = async (): Promise<void> => {
+    const getUser = async () => {
       const { data: { user } } = await supabase.auth.getUser()
       setUser(user)
+      setLoading(false)
     }
     
     getUser()
@@ -34,41 +34,49 @@ export default function Layout({ children }: LayoutProps) {
     return () => {
       authListener.subscription.unsubscribe()
     }
-  }, [router])
+  }, [])
 
-  const handleSignOut = async (): Promise<void> => {
+  const handleSignOut = async () => {
     await supabase.auth.signOut()
+    router.push('/login')
   }
 
   return (
     <div className="layout">
       <header>
         <nav>
-          <Link href="/marketplace" className="logo">
-            Student Marketplace
+          <Link href="/" className="logo">
+            HMC Senior Sale
           </Link>
           
-          {user && (
-            <div className="nav-links">
-              <Link href="/marketplace">
-                Browse
+          <div className="nav-links">
+            <Link href="/marketplace">
+              Browse
+            </Link>
+            
+            {user ? (
+              <>
+                <Link href="/new-listing">
+                  Sell Item
+                </Link>
+                <Link href="/my-listings">
+                  My Listings
+                </Link>
+                <button onClick={handleSignOut}>Sign Out</button>
+              </>
+            ) : (
+              <Link href="/login">
+                Sign In
               </Link>
-              <Link href="/new-listing">
-                Sell Item
-              </Link>
-              <Link href="/my-listings">
-                My Listings
-              </Link>
-              <button onClick={handleSignOut}>Sign Out</button>
-            </div>
-          )}
+            )}
+          </div>
         </nav>
       </header>
       
       <main>{children}</main>
       
       <footer>
-        <p>© {new Date().getFullYear()} Student Marketplace</p>
+        <p>© {new Date().getFullYear()} HMC Senior Sale</p>
       </footer>
     </div>
   )

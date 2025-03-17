@@ -4,10 +4,20 @@ import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabaseClient'
 import { useRouter } from 'next/navigation'
 import Layout from '@/components/layout/Layout'
-import { User } from '@supabase/supabase-js'
+import ProtectedRoute from '@/components/auth/ProtectedRoute'
+import { useAuth } from '@/components/auth/AuthProvider'
 import { Category } from '@/types/listings'
 
-export default function NewListing() {
+export default function NewListingPage() {
+  return (
+    <ProtectedRoute>
+      <NewListing />
+    </ProtectedRoute>
+  )
+}
+
+function NewListing() {
+  const { user } = useAuth()
   const [title, setTitle] = useState<string>('')
   const [description, setDescription] = useState<string>('')
   const [price, setPrice] = useState<string>('')
@@ -15,19 +25,9 @@ export default function NewListing() {
   const [images, setImages] = useState<File[]>([])
   const [categories, setCategories] = useState<Category[]>([])
   const [loading, setLoading] = useState<boolean>(false)
-  const [user, setUser] = useState<User | null>(null)
   const router = useRouter()
 
   useEffect(() => {
-    const getUser = async (): Promise<void> => {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) {
-        router.push('/')
-      } else {
-        setUser(user)
-      }
-    }
-    
     const fetchCategories = async (): Promise<void> => {
       const { data, error } = await supabase
         .from('categories')
@@ -38,9 +38,8 @@ export default function NewListing() {
       else setCategories(data || [])
     }
     
-    getUser()
     fetchCategories()
-  }, [router])
+  }, [])
 
   const handleSubmit = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault()
