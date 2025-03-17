@@ -34,8 +34,12 @@ export default function Layout({ children }: LayoutProps) {
   }, [])
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut()
-    router.push('/login')
+    try {
+      await supabase.auth.signOut()
+      router.push('/auth/signin?provider=google')  // Adjust the path based on your routing structure
+    } catch (error) {
+      console.error('Error signing out:', error)
+    }
   }
 
   return (
