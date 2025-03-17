@@ -8,12 +8,14 @@ export default function Login() {
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
 
+  
+
   const handleGoogleSignIn = async () => {
     try {
       setLoading(true)
       setMessage('')
       
-      const { error } = await supabase.auth.signInWithOAuth({
+      const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
           redirectTo: `${window.location.origin}/auth/callback`
@@ -21,6 +23,10 @@ export default function Login() {
       })
       
       if (error) throw error
+
+      if (data?.url) {
+        window.location.href = data.url
+      }
       
       // The user will be redirected to Google for authentication,
       // so we don't need to handle success here
