@@ -6,48 +6,37 @@ import { useRouter } from 'next/navigation'
 import Layout from '@/components/layout/Layout'
 
 export default function Login() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
-  const [isSignUp, setIsSignUp] = useState(false)
   const router = useRouter()
 
-  const handleAuth = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    setMessage('')
-
+  const handleGoogleSignIn = async () => {
     try {
-      if (isSignUp) {
-        // Sign up
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            emailRedirectTo: `${window.location.origin}/auth/callback`,
+      setLoading(true)
+      setMessage('')
+      
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
           },
-        })
-
-        if (error) throw error
-        setMessage('Check your email for the confirmation link!')
-      } else {
-        // Sign in
-        const { error } = await supabase.auth.signInWithPassword({
-          email,
-          password,
-        })
-
-        if (error) throw error
-        router.push('/marketplace')
-      }
+          redirectTo: `${window.location.origin}/auth/callback`,
+        },
+      })
+      
+      if (error) throw error
+      
+      // The user will be redirected to Google for authentication,
+      // so we don't need to handle success here
     } catch (error: unknown) {
-        const errorMessage = error instanceof Error 
-          ? error.message 
-          : typeof error === 'object' && error !== null && 'message' in error
-            ? String((error as {message: string}).message)
-            : 'An error occurred during authentication';
-        setMessage(errorMessage);
+      const errorMessage = error instanceof Error 
+        ? error.message 
+        : typeof error === 'object' && error !== null && 'message' in error
+          ? String((error as {message: string}).message)
+          : 'An error occurred during authentication';
+      setMessage(errorMessage);
     } finally {
       setLoading(false)
     }
@@ -56,43 +45,21 @@ export default function Login() {
   return (
     <Layout>
       <div className="auth-container">
-        <h1>{isSignUp ? 'Create an Account' : 'Sign In'}</h1>
+        <h1>Sign In</h1>
         
         {message && <div className="message">{message}</div>}
         
-        <form onSubmit={handleAuth}>
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-          
-          <div className="form-group">
-            <label htmlFor="password">Password</label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-          
-          <button type="submit" disabled={loading}>
-            {loading ? 'Processing...' : isSignUp ? 'Sign Up' : 'Sign In'}
-          </button>
-        </form>
+        <button 
+          onClick={handleGoogleSignIn} 
+          disabled={loading}
+          className="google-signin-button"
+        >
+          {loading ? 'Processing...' : 'Sign in with Google'}
+        </button>
         
-        <div className="auth-switch">
-          <button onClick={() => setIsSignUp(!isSignUp)}>
-            {isSignUp ? 'Already have an account? Sign In' : 'Need an account? Sign Up'}
-          </button>
-        </div>
+        <p className="auth-info">
+          Use your Google account to sign in. We'll create an account for you automatically if you don't have one.
+        </p>
       </div>
     </Layout>
   )
