@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabaseClient'
 import Layout from '@/components/layout/Layout'
 import Link from 'next/link'
 import { Listing, Category } from '@/types/listings'
+import Image from 'next/image'
 
 export default function Marketplace() {
   const [listings, setListings] = useState<Listing[]>([])
@@ -95,9 +96,12 @@ export default function Marketplace() {
                 <Link href={`/listing/${listing.id}`} key={listing.id}>
                   <div className="listing-card">
                     {listing.images && listing.images[0] && (
-                      <img 
+                      <Image 
                         src={listing.images[0].url} 
-                        alt={listing.title} 
+                        alt={listing.title}
+                        width={300}
+                        height={200}
+                        style={{ objectFit: 'cover' }}
                       />
                     )}
                     <h3>{listing.title}</h3>

@@ -41,8 +41,13 @@ export default function Login() {
         if (error) throw error
         router.push('/marketplace')
       }
-    } catch (error: any) {
-      setMessage(error.message || 'An error occurred during authentication')
+    } catch (error: unknown) {
+        const errorMessage = error instanceof Error 
+          ? error.message 
+          : typeof error === 'object' && error !== null && 'message' in error
+            ? String((error as {message: string}).message)
+            : 'An error occurred during authentication';
+        setMessage(errorMessage);
     } finally {
       setLoading(false)
     }

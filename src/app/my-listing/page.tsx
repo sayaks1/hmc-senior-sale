@@ -7,6 +7,8 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { User } from '@supabase/supabase-js'
 import { Listing } from '@/types/listings'
+import Image from 'next/image'
+
 
 export default function MyListings() {
   const [listings, setListings] = useState<Listing[]>([])
@@ -108,11 +110,13 @@ export default function MyListings() {
                       <tr key={listing.id}>
                         <td>
                           {listing.images && listing.images[0] ? (
-                            <img 
+                            <Image 
                               src={listing.images[0].url} 
                               alt={listing.title}
-                              className="thumbnail" 
-                            />
+                              width={300}
+                              height={200}
+                              style={{ objectFit: 'cover' }}
+                          />
                           ) : (
                             <div className="no-image">No image</div>
                           )}
