@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from '@/lib/supabaseClient'
 import Link from 'next/link'
-// import { useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { User } from '@supabase/supabase-js'
 
 interface LayoutProps {
@@ -12,7 +12,7 @@ interface LayoutProps {
 
 export default function Layout({ children }: LayoutProps) {
   const [user, setUser] = useState<User | null>(null)
-  // const router = useRouter()
+  const router = useRouter()
 
   useEffect(() => {
     const { data: authListener } = supabase.auth.onAuthStateChange(
@@ -38,9 +38,7 @@ export default function Layout({ children }: LayoutProps) {
       const { error } = await supabase.auth.signOut()
       if (error) throw error
       console.log('Signed out successfully')
-      // setTimeout(() => {
-      //   router.push('/login')
-      // }, 100)
+      router.push('/login')
     } catch (error) {
       console.error('Error signing out:', error)
     }
