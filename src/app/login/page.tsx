@@ -2,13 +2,11 @@
 
 import { useState } from 'react'
 import { supabase } from '@/lib/supabaseClient'
-import { useRouter } from 'next/navigation'
 import Layout from '@/components/layout/Layout'
 
 export default function Login() {
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
-  const router = useRouter()
 
   const handleGoogleSignIn = async () => {
     try {
@@ -58,7 +56,7 @@ export default function Login() {
         </button>
         
         <p className="auth-info">
-          Use your Google account to sign in. We'll create an account for you automatically if you don't have one.
+          Use your Google account to sign in. We&apos;ll create an account for you automatically if you don&apos;t have one.
         </p>
       </div>
     </Layout>
