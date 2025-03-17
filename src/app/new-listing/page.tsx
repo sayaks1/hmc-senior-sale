@@ -104,7 +104,7 @@ export default function NewListing() {
       }
       
       router.push('/my-listings')
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error creating listing:', error)
       alert('Error creating listing. Please try again.')
     } finally {

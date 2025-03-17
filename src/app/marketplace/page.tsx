@@ -29,16 +29,16 @@ export default function Marketplace() {
   }
 
   async function fetchListings(): Promise<void> {
-    let query = supabase
-      .from('listings')
-      .select(`
-        *,
-        users(full_name, email),
-        categories(name),
-        images(url)
-      `)
-      .eq('status', 'available')
-      .order('created_at', { ascending: false })
+    const query = supabase
+    .from('listings')
+    .select(`
+      *,
+      users(full_name, email),
+      categories(name),
+      images(url)
+    `)
+    .eq('status', 'available')
+    .order('created_at', { ascending: false })
     
     const { data, error } = await query
     

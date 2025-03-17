@@ -5,6 +5,7 @@ import { useRouter } from 'next/router'
 import { supabase } from '@/lib/supabaseClient'
 import Layout from '../../components/layout/Layout'
 import { User } from '@supabase/supabase-js'
+import Image from 'next/image'
 
 // Define a type for your listing
 type Listing = {
@@ -41,13 +42,10 @@ export default function ListingDetail() {
     }
     
     getUser()
-  }, [])
-
-  useEffect(() => {
     if (id) {
       fetchListing()
     }
-  }, [id])
+  }, [id, router])
 
   async function fetchListing() {
     const { data, error } = await supabase
@@ -97,10 +95,13 @@ export default function ListingDetail() {
         <div className="listing-images">
           {listing.images && listing.images.length > 0 ? (
             listing.images.map((image) => (
-              <img 
+              <Image 
                 key={image.id} 
                 src={image.url} 
-                alt={listing.title} 
+                alt={listing.title}
+                className="thumbnail"
+                width={200}
+                height={150}
               />
             ))
           ) : (

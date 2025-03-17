@@ -20,8 +20,13 @@ export default function Auth() {
         },
       })
       if (error) throw error
-    } catch (error: any) {
-      alert(error.error_description || error.message)
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error 
+        ? error.message 
+        : typeof error === 'object' && error !== null && 'message' in error
+          ? String((error as {message: string}).message)
+          : 'An unknown error occurred';
+      alert(errorMessage);
     } finally {
       setLoading(false)
     }

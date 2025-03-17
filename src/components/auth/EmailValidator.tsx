@@ -6,14 +6,12 @@ import { useRouter } from 'next/navigation'
 import { User } from '@supabase/supabase-js'
 
 export default function EmailValidator() {
-  const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
   const router = useRouter()
 
   useEffect(() => {
     const checkUser = async (): Promise<void> => {
       const { data: { user } } = await supabase.auth.getUser()
-      setUser(user)
       setLoading(false)
       
       if (user) {

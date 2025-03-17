@@ -155,7 +155,7 @@ export default function MyListings() {
                 </table>
               </div>
             ) : (
-              <p>You haven't created any listings yet.</p>
+              <p>You haven&apos;t created any listings yet.</p>
             )}
           </>
         )}
