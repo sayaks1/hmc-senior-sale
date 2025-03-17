@@ -35,8 +35,12 @@ export default function Layout({ children }: LayoutProps) {
 
   const handleSignOut = async () => {
     try {
-      await supabase.auth.signOut()
-      router.push('/login')
+      const { error } = await supabase.auth.signOut()
+      if (error) throw error
+      console.log('Signed out successfully')
+      setTimeout(() => {
+        router.push('/login')
+      }, 100)
     } catch (error) {
       console.error('Error signing out:', error)
     }
