@@ -1,9 +1,10 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/router'
+import { useParams } from 'next/navigation'  // Changed from next/router
+import { useRouter } from 'next/navigation'  // Changed from next/router
 import { supabase } from '@/lib/supabaseClient'
-import Layout from '../../components/layout/Layout'
+import Layout from '@/components/layout/Layout'
 import { User } from '@supabase/supabase-js'
 import Image from 'next/image'
 
@@ -33,7 +34,8 @@ export default function ListingDetail() {
   const [loading, setLoading] = useState(true)
   const [currentUser, setCurrentUser] = useState<User | null>(null)
   const router = useRouter()
-  const { id } = router.query
+  const params = useParams()
+  const id = params.id as string  // Get id from params instead of router.query
 
   useEffect(() => {
     const getUser = async () => {
@@ -42,6 +44,8 @@ export default function ListingDetail() {
     }
     
     const fetchListing = async () => {
+      if (!id) return
+      
       const { data, error } = await supabase
         .from('listings')
         .select(`
@@ -64,10 +68,8 @@ export default function ListingDetail() {
     }
     
     getUser()
-    if (id) {
-      fetchListing()
-    }
-  }, [id, router])
+    fetchListing()
+  }, [id])
 
   const handleContact = () => {
     if (listing && listing.users && listing.users.email) {
