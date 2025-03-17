@@ -16,9 +16,7 @@ export default function Login() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: process.env.NODE_ENV === 'production'
-            ? 'https://hmc-senior-sale-jytiirw1h-saya-kim-suzukis-projects.vercel.app/auth/callback'
-            : `${window.location.origin}/auth/callback`
+          redirectTo: `${window.location.origin}/auth/callback`
         }
       })
       
