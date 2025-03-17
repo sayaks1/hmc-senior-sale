@@ -38,9 +38,7 @@ export default function Layout({ children }: LayoutProps) {
       const { error } = await supabase.auth.signOut()
       if (error) throw error
       console.log('Signed out successfully')
-      setTimeout(() => {
-        router.push('/login')
-      }, 100)
+      router.replace('/login')
     } catch (error) {
       console.error('Error signing out:', error)
     }
