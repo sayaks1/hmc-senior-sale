@@ -54,11 +54,6 @@ export default function Home() {
                   Sell an Item
                 </Link>
               </Button>
-              <Button asChild variant="outline" size="lg" className="w-full">
-                <Link href="/marketplace">
-                  My Listings
-                </Link>
-              </Button>
             </>
           ) : (
             <Button asChild size="lg" className="w-full">
