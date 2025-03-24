@@ -102,7 +102,7 @@ function NewListing() {
         }
       }
       
-      router.push('/my-listings')
+      router.push('/marketplace')
     } catch (error: unknown) {
       console.error('Error creating listing:', error)
       alert('Error creating listing. Please try again.')

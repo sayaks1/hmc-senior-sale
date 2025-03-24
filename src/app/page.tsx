@@ -9,11 +9,13 @@ import { Button } from '@/components/ui/button'
 
 export default function Home() {
   const [user, setUser] = useState<User | null>(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const getUser = async () => {
       const { data: { user } } = await supabase.auth.getUser()
       setUser(user)
+      setLoading(false)
     }
     
     getUser()
@@ -21,6 +23,7 @@ export default function Home() {
     const { data: authListener } = supabase.auth.onAuthStateChange(
       (event, session) => {
         setUser(session?.user || null)
+        setLoading(false)
       }
     )
 
@@ -47,12 +50,12 @@ export default function Home() {
                 </Link>
               </Button>
               <Button asChild variant="outline" size="lg" className="w-full">
-                <Link href="/new-listing">
+                <Link href="/marketplace">
                   Sell an Item
                 </Link>
               </Button>
               <Button asChild variant="outline" size="lg" className="w-full">
-                <Link href="/my-listings">
+                <Link href="/marketplace">
                   My Listings
                 </Link>
               </Button>
