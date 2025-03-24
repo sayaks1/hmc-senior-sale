@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabaseClient'
 import Layout from '@/components/layout/Layout'
 import Link from 'next/link'
 import { User } from '@supabase/supabase-js'
+import { Button } from '@/components/ui/button'
 
 export default function Home() {
   const [user, setUser] = useState<User | null>(null)
@@ -30,32 +31,40 @@ export default function Home() {
 
   return (
     <Layout>
-      <div className="landing-page">
-        <h1>Welcome to HMC Senior Sale</h1>
-        <p className="description">
+      <div className="flex flex-col items-center justify-center min-h-[calc(100vh-4rem)] p-8">
+        <h1 className="text-4xl font-bold mb-6">Welcome to HMC Senior Sale</h1>
+        <p className="text-lg text-gray-600 mb-8 max-w-2xl text-center">
           A marketplace exclusively for Harvey Mudd College students to buy and sell items. 
           Connect with fellow students, find great deals, and make your college life easier!
         </p>
         
-        {user ? (
-          <div className="cta-buttons">
-            <Link href="/marketplace" className="primary-button">
-              Browse Marketplace
-            </Link>
-            <Link href="/new-listing" className="secondary-button">
-              Sell an Item
-            </Link>
-            <Link href="/my-listings" className="secondary-button">
-              My Listings
-            </Link>
-          </div>
-        ) : (
-          <div className="cta-buttons">
-            <Link href="/login" className="primary-button">
-              Sign In to Get Started
-            </Link>
-          </div>
-        )}
+        <div className="flex flex-col gap-4 w-full max-w-sm">
+          {user ? (
+            <>
+              <Button asChild size="lg" className="w-full">
+                <Link href="/marketplace">
+                  Browse Marketplace
+                </Link>
+              </Button>
+              <Button asChild variant="outline" size="lg" className="w-full">
+                <Link href="/new-listing">
+                  Sell an Item
+                </Link>
+              </Button>
+              <Button asChild variant="outline" size="lg" className="w-full">
+                <Link href="/my-listings">
+                  My Listings
+                </Link>
+              </Button>
+            </>
+          ) : (
+            <Button asChild size="lg" className="w-full">
+              <Link href="/login">
+                Sign In to Get Started
+              </Link>
+            </Button>
+          )}
+        </div>
       </div>
     </Layout>
   )
