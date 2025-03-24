@@ -3,6 +3,7 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 export async function middleware(request: NextRequest) {
+
   // Skip middleware for static files and CSS
   const { pathname } = request.nextUrl
   if (
