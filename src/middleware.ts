@@ -3,6 +3,20 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 export async function middleware(request: NextRequest) {
+  // Skip middleware for static files and CSS
+  const { pathname } = request.nextUrl
+  if (
+    pathname.includes('/_next/') ||
+    pathname.includes('/api/') ||
+    pathname.endsWith('.ico') ||
+    pathname.endsWith('.svg') ||
+    pathname.endsWith('.jpg') ||
+    pathname.endsWith('.png') ||
+    pathname.endsWith('.css')
+  ) {
+    return NextResponse.next()
+  }
+
   const res = NextResponse.next()
   const supabase = createMiddlewareClient({ req: request, res })
 

@@ -6,6 +6,8 @@ import { AuthProvider } from '@/components/auth/AuthProvider'
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
+  preload: true,
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
@@ -20,6 +22,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={inter.variable} suppressHydrationWarning>
+      <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      </head>
       <body className="min-h-screen bg-background font-sans antialiased" suppressHydrationWarning>
         <AuthProvider>
           <div className="relative flex min-h-screen flex-col">

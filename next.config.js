@@ -18,6 +18,9 @@ const nextConfig = {
     }
     return config;
   },
+  // Add asset prefix for static files in production for better CDN handling
+  assetPrefix: process.env.NODE_ENV === 'production' ? undefined : undefined,
+  poweredByHeader: false,
   // Add headers configuration
   async headers() {
     return [
