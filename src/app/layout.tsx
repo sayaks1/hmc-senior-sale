@@ -24,6 +24,14 @@ export default function RootLayout({
     <html lang="en" className={inter.variable} suppressHydrationWarning>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <script dangerouslySetInnerHTML={{
+          __html: `
+            // Handle /my-listings 404 error by redirecting to /marketplace
+            if (window.location.pathname === '/my-listings') {
+              window.location.href = '/marketplace';
+            }
+          `
+        }} />
       </head>
       <body className="min-h-screen bg-background font-sans antialiased" suppressHydrationWarning>
         <AuthProvider>

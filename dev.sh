@@ -1,5 +1,7 @@
 #!/bin/bash
 # This script runs Next.js directly without using npm scripts
-echo "Running Next.js directly..."
-# Explicitly override any flags
-NODE_OPTIONS='' npx next dev 
+echo "Starting Next.js development server..."
+# Clear any environment variables that might be adding flags
+unset NODE_OPTIONS
+# Run Next.js directly without any flags
+npx next dev 
