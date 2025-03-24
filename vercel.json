@@ -1,8 +1,6 @@
 {
   "version": 2,
   "public": true,
-  "cleanUrls": true,
-  "trailingSlash": false,
   "github": {
     "silent": true
   },
@@ -34,6 +32,11 @@
       "src": "/my-listing(s)?.*",
       "status": 404,
       "dest": "/404"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/$1",
+      "continue": true
     }
   ]
 }
