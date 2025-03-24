@@ -53,24 +53,8 @@ export default function Layout({ children }: LayoutProps) {
           </Link>
           
           <div className="nav-links">
-            <Link href="/marketplace">
-              Browse
-            </Link>
-            
-            {user ? (
-              <>
-                <Link href="/new-listing">
-                  Sell Item
-                </Link>
-                <Link href="/my-listings">
-                  My Listings
-                </Link>
-                <button onClick={handleSignOut}>Sign Out</button>
-              </>
-            ) : (
-              <Link href="/login">
-                Sign In
-              </Link>
+            {user && (
+              <button onClick={handleSignOut}>Sign Out</button>
             )}
           </div>
         </nav>
