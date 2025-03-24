@@ -7,6 +7,9 @@ import Link from 'next/link'
 import { User } from '@supabase/supabase-js'
 import { Button } from '@/components/ui/button'
 
+// Generate a unique version ID
+const VERSION = Date.now().toString();
+
 export default function Home() {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
@@ -45,19 +48,19 @@ export default function Home() {
           {user ? (
             <>
               <Button asChild size="lg" className="w-full">
-                <Link href="/marketplace">
+                <Link href={`/marketplace?v=${VERSION}`}>
                   Browse Marketplace
                 </Link>
               </Button>
               <Button asChild variant="outline" size="lg" className="w-full">
-                <Link href="/marketplace">
+                <Link href={`/marketplace?v=${VERSION}`}>
                   Sell an Item
                 </Link>
               </Button>
             </>
           ) : (
             <Button asChild size="lg" className="w-full">
-              <Link href="/login">
+              <Link href={`/login?v=${VERSION}`}>
                 Sign In to Get Started
               </Link>
             </Button>

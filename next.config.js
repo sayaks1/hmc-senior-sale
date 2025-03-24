@@ -43,6 +43,10 @@ const nextConfig = {
       },
     ];
   },
+  // Add cache busting
+  generateBuildId: async () => {
+    return `build-${Date.now()}`
+  },
 };
 
 module.exports = nextConfig;

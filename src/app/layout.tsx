@@ -24,8 +24,14 @@ export default function RootLayout({
     <html lang="en" className={inter.variable} suppressHydrationWarning>
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <meta http-equiv="Pragma" content="no-cache" />
+        <meta http-equiv="Expires" content="0" />
         <script dangerouslySetInnerHTML={{
           __html: `
+            // Force cache invalidation with timestamp
+            window.__BUILD_ID = "${Date.now()}";
+            
             // Handle /my-listings 404 error by redirecting to /marketplace
             if (window.location.pathname === '/my-listings') {
               window.location.href = '/marketplace';
