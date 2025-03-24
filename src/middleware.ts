@@ -3,8 +3,12 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 export async function middleware(request: NextRequest) {
+  // Block my-listings route completely and return 404
+  if (request.nextUrl.pathname.includes('my-listing')) {
+    return new Response('Not Found', { status: 404 })
+  }
 
-  // Skip middleware for static files and CSS
+  // Skip middleware for static files
   const { pathname } = request.nextUrl
   if (
     pathname.includes('/_next/') ||

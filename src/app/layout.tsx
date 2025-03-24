@@ -10,6 +10,33 @@ const inter = Inter({
   display: 'swap',
 });
 
+const purgeCache = `
+  // Forcefully remove my-listings
+  (function() {
+    // If on my-listings page, show a 404
+    if (window.location.pathname.includes('my-listing')) {
+      document.body.innerHTML = '404 Not Found';
+      history.replaceState(null, '', '/marketplace');
+      return;
+    }
+
+    // Purge all caches
+    if ('caches' in window) {
+      caches.keys().then(cacheNames => {
+        cacheNames.forEach(cacheName => {
+          caches.delete(cacheName);
+        });
+      });
+    }
+    
+    // Force localStorage clear
+    localStorage.clear();
+    
+    // Clear sessionStorage
+    sessionStorage.clear();
+  })();
+`;
+
 export const metadata: Metadata = {
   title: "HMC Senior Sale",
   description: "A marketplace for Harvey Mudd College seniors",
@@ -27,17 +54,7 @@ export default function RootLayout({
         <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
         <meta http-equiv="Pragma" content="no-cache" />
         <meta http-equiv="Expires" content="0" />
-        <script dangerouslySetInnerHTML={{
-          __html: `
-            // Force cache invalidation with timestamp
-            window.__BUILD_ID = "${Date.now()}";
-            
-            // Handle /my-listings 404 error by redirecting to /marketplace
-            if (window.location.pathname === '/my-listings') {
-              window.location.href = '/marketplace';
-            }
-          `
-        }} />
+        <script dangerouslySetInnerHTML={{ __html: purgeCache }} />
       </head>
       <body className="min-h-screen bg-background font-sans antialiased" suppressHydrationWarning>
         <AuthProvider>
